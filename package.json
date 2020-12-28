@@ -1,0 +1,50 @@
+{
+  "name": "ethereumAuthProvider",
+  "version": "0.1.11",
+  "description": "Auth provider for redwood using Ethererum wallets",
+  "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "lint-staged": {
+    "*.js": []
+  },
+  "prepublish": "yarn build",
+  "scripts": {
+    "precommit": "lint-staged",
+    "watch": "webpack --watch --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "test": "jest",
+    "lint": "eslint ./src --fix",
+    "stats": "yarn generate-stats && bundle-stats ./stats.json",
+    "generate-stats": "webpack --profile --json > stats.json",
+    "stats-baseline": "yarn generate-stats && bundle-stats ./stats.json --baseline --json",
+    "analyze": "xdg-open ./dist/bundle-stats.html && webpack-bundle-analyzer ./stats.json"
+  },
+  "dependencies": {
+    "@ethersproject/providers": "^5.0.4",
+    "@walletconnect/web3-provider": "^1.2.0-alpha.0",
+    "walletlink": "^2.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "babel-loader": "^8.0.6",
+    "bundle-stats": "^2.0.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-prettier": "^3.1.2",
+    "lint-staged": "^10.2.2",
+    "prettier": "^1.19.1",
+    "webpack": "^4.41.5",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "todo"
+  },
+  "homepage": "todo"
+}
