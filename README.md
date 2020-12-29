@@ -14,9 +14,7 @@
 
 > Auth provider for RedwoodJS using Ethererum
 
-- @ethersproject/providers v5.0.4 [docs](https://docs.ethers.io/v5/)
-- `walletlink` v1.0.0
-- `@walletconnect/web3-provider` v1.0.13
+- `@ethersproject/providers` v5.0.4 [docs](https://docs.ethers.io/v5/)
 
 ### 🏠 [Homepage](todo)
 
@@ -72,15 +70,19 @@ const client = new EthereumAuthClient({client: graphQLClient})
 #### Server side
 
 - [] Generate stubs for the `services/auth/auth.js`
+- [] Update the graphql function with `getCurrentUser`?
 
 ### Create a new Ethereum JWT decoder
 
-- [] Update the graphql function with `getCurrentUser`?
+### Add additional wallet providers
+
+- `walletlink` v1.0.0
+- `@walletconnect/web3-provider` v1.0.13
 
 ## Publishing
 
 ```bash
-yarn publish --dry-run --access public
+yarn publish --dry-run
 ```
 
 ## Author
