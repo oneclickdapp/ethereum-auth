@@ -1,9 +1,7 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { createGraphQLClient } from "@redwoodjs/web";
+import gql from "graphql-tag";
 
 const LOCAL_TOKEN_KEY = "wallet_auth_token";
-
-const graphQLClient = createGraphQLClient();
 
 const AUTH_CHALLENGE_MUTATION = gql`
   mutation AuthChallengeMutation($input: AuthChallengeInput!) {
@@ -23,7 +21,7 @@ export const getErrorResponse = (error, functionName) => {
   const errorText = typeof error === "string" ? error : error.message;
   const res = {
     /* eslint-disable-nextline i18next/no-literal-string */
-    message: `Error web3.${functionName}(): ${errorText}`,
+    message: `Error web3.${functionName}(): ${errorText}`
   };
   const ABORTED = "aborted";
   const EXCEPTION = "exception";
@@ -58,9 +56,9 @@ export const unlockBrowser = async ({ debug }) => {
       method: "eth_requestAccounts",
       params: [
         {
-          eth_accounts: {},
-        },
-      ],
+          eth_accounts: {}
+        }
+      ]
     });
 
     const walletProvider = new Web3Provider(window.ethereum);
@@ -75,7 +73,7 @@ export const unlockBrowser = async ({ debug }) => {
     return {
       hasWallet: true,
       walletAddress: walletAddress[0],
-      walletProvider,
+      walletProvider
     };
   } catch (error) {
     if (isWeb3EnabledBrowser()) {
@@ -85,13 +83,13 @@ export const unlockBrowser = async ({ debug }) => {
       return {
         hasWallet: true,
         isUnlocked: false,
-        ...getErrorResponse(error, "unlockBrowser"),
+        ...getErrorResponse(error, "unlockBrowser")
       };
     }
     return {
       hasWallet: false,
       isUnlocked: false,
-      ...getErrorResponse(error, "unlockBrowser"),
+      ...getErrorResponse(error, "unlockBrowser")
     };
   }
 };
@@ -105,42 +103,58 @@ export const signMessage = async ({ walletProvider, message }) => {
   }
 };
 
-const Provider = {
-  login: async () => {
+// TODO: Add types to package, and enable typescript
+// export type Ethereum = InstanceType<typeof EthereumAuthClient>;
+
+class EthereumAuthClient {
+  constructor({ graphQLClient }) {
+    this.graphQLClient = graphQLClient;
+  }
+
+  async login() {
     const {
       walletAddress,
       walletProvider,
       error: errorUnlocking,
-      hasWallet,
+      hasWallet
     } = await unlockBrowser({ debug: true });
 
     const {
       data: {
-        authChallenge: { message },
-      },
-    } = await graphQLClient.mutate({
+        authChallenge: { message }
+      }
+    } = await this.graphQLClient.mutate({
       mutation: AUTH_CHALLENGE_MUTATION,
-      variables: { input: { address: walletAddress } },
+      variables: { input: { address: walletAddress } }
     });
 
     const { signature } = await signMessage({
       walletProvider,
-      message,
+      message
     });
 
     const {
       data: {
-        authVerify: { token },
-      },
-    } = await graphQLClient.mutate({
+        authVerify: { token }
+      }
+    } = await this.graphQLClient.mutate({
       mutation: AUTH_VERIFY_MUTATION,
-      variables: { input: { address: walletAddress, signature } },
+      variables: { input: { address: walletAddress, signature } }
     });
     localStorage.setItem(LOCAL_TOKEN_KEY, token);
-  },
-  logout: () => localStorage.removeItem(LOCAL_TOKEN_KEY),
-  getToken: () => localStorage.getItem(LOCAL_TOKEN_KEY),
-  getUserMetadata: () => localStorage.getItem(LOCAL_TOKEN_KEY),
-};
+  }
 
-export default Provider;
+  logout() {
+    return localStorage.removeItem(LOCAL_TOKEN_KEY);
+  }
+
+  getToken() {
+    return localStorage.getItem(LOCAL_TOKEN_KEY);
+  }
+
+  getUserMetadata() {
+    return localStorage.getItem(LOCAL_TOKEN_KEY);
+  }
+}
+
+export default EthereumAuthClient;

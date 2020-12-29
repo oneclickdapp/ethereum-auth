@@ -1,3 +1,3 @@
-import EthereumAuthProvider from "./provider";
+import EthereumAuthClient from "./client";
 
-export default EthereumAuthProvider;
+export default EthereumAuthClient;
