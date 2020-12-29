@@ -108,6 +108,10 @@ export const signMessage = async ({ walletProvider, message }) => {
 
 class EthereumAuthClient {
   constructor({ graphQLClient }) {
+    if (!graphQLClient)
+      throw new Error(
+        "You must provide a graphQLClient to instantiate EthereumAuthClient"
+      );
     this.graphQLClient = graphQLClient;
   }
 
