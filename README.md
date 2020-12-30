@@ -249,45 +249,7 @@ rm -rf ./node_modules/@redwoodjs/cli
 yarn upgrade @redwoodjs/auth@dev @redwoodjs/api@dev @redwoodjs/api@cli --no-lockfile --registry http://localhost:4873/
 ```
 
-## TODO
-
-### Add a Generator for Redwood CLI
-
-#### Web side
-
-There is an additional @redwoodjs/web import.
-
-```js
-// web/src/index.js
-import { RedwoodProvider, FatalErrorBoundary } from "@redwoodjs/web";
-
-// Changes to add  import createGraphQLClient
-import {
-  RedwoodProvider,
-  FatalErrorBoundary,
-  createGraphQLClient
-} from "@redwoodjs/web";
-```
-
-Then do the standard pattern. If you want to use a different auth server, you can substitute `graphQLClient` with your own.
-
-```
-import EthereumAuthClient from 'ethereumAuthClient'
-
-const graphQLClient = createGraphQLClient();
-const client = new EthereumAuthClient({client: graphQLClient})
-
-<AuthProvider client={ethereumAuthClient} type="Ethereum">
-```
-
-#### Server side
-
-- [] add decoder
-- [] Generate stubs for the `services/auth/auth.js` and add `ethereumjs-util` and `eth-sig-util`
-- [] Generate stubs for `lib/auth.js` and add `getCurrentUser()`
-- [] Update the graphql function with `getCurrentUser`?
-
-### Create a new Ethereum JWT decoder
+## Planned features
 
 ### Add additional wallet providers
 
