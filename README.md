@@ -14,26 +14,26 @@
 
 > Auth provider for RedwoodJS using Ethererum
 
-- `@ethersproject/providers` v5.0.4 [docs](https://docs.ethers.io/v5/)
+This package was inspired from a [lengthy tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) I wrote on adding Ethereum auth to Redwood. If you're planning to implement your own custom auth to RedwoodJS (aside from Ethereum), you may find that tutorial useful.
 
-This project was inspired from a [lengthy tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) I wrote on adding Ethereum auth to Redwood. If you're planning to implement your own custom auth to RedwoodJS (aside from Ethereum), you may find it useful. Now the process is much more streamlined. Enjoy!
+### ✨ [Demo](https://redwood-web3-login-demo.vercel.app/)
 
 ## Setup
 
 If you haven't created a redwood app yet, you can do so now. See my [introductory blog post](https://patrickgallagher.dev/blog/2020/11/18/web3-redwood-intro/using-redwoodjs-to-create-an-ethereum-app) for more help getting started.
 
-```
+```bash
 yarn create redwood-app myDapp
 ```
 
-First let's do some scaffolding and install the necessary packages.
+First let's do some scaffolding and install the necessary packages. This is where the 🧙‍♂️✨ magic happens!
 
 ```bash
 cd myDapp
 yarn rw generate auth ethereum
 ```
 
-Next we need to update our models, by adding `address` to `User` mode, and create a new `AuthDetail` model.
+Next we need to update our models. Add `address` to the **User** model, and create a new `AuthDetail` model.
 
 ```js
 // api/db/schema.prisma
@@ -50,11 +50,14 @@ model AuthDetail {
 }
 ```
 
-Now use the scaffold tool.
+Now lets use the generator for our new models. We only need the **sdl** for `AuthDetail`.
 
 ```bash
 yarn rw generate scaffold user
+yarn rw generate sdl AuthDetail
 ```
+
+You can delete the service for `authDetails`, since it won't be used.
 
 Awesomesauce. Let's spin up our database!
 
@@ -63,20 +66,152 @@ yarn rw db save
 yarn rw db up
 ```
 
-If you
+We're halfway there. Now let's create a new service to verify Ethereum signatures. We'll start by creating the **sdl** `ethereumAuth.js`.
 
-We're halfway there. Now let's create the service to verify Ethereum signatures.
+```js
+// api/src/graphql/ethereumAuth.js
+export const schema = gql`
+  type Mutation {
+    authChallenge(input: AuthChallengeInput!): AuthChallengeResult
+    authVerify(input: AuthVerifyInput!): AuthVerifyResult
+  }
 
+  input AuthChallengeInput {
+    address: String!
+  }
+
+  type AuthChallengeResult {
+    message: String!
+  }
+
+  input AuthVerifyInput {
+    signature: String!
+    address: String!
+  }
+
+  type AuthVerifyResult {
+    token: String!
+  }
+`;
 ```
-yarn rw generate service ethereumAuth
 
+Next create a new service named `ethereumAuth`, and paste in this code.
+
+```js
+// api/src/services/ethereumAuth/ethereumAuth.js
+import { AuthenticationError } from "@redwoodjs/api";
+
+import { bufferToHex } from "ethereumjs-util";
+import { recoverPersonalSignature } from "eth-sig-util";
+import jwt from "jsonwebtoken";
+
+import { db } from "src/lib/db";
+
+const NONCE_MESSAGE =
+  "Please prove you control this wallet by signing this random text: ";
+
+const getNonceMessage = nonce => NONCE_MESSAGE + nonce;
+
+export const authChallenge = async ({ input: { address: addressRaw } }) => {
+  const nonce = Math.floor(Math.random() * 1000000).toString();
+  const address = addressRaw.toLowerCase();
+  await db.user.upsert({
+    where: { address },
+    update: {
+      authDetail: {
+        update: {
+          nonce,
+          timestamp: new Date()
+        }
+      }
+    },
+    create: {
+      address,
+      authDetail: {
+        create: {
+          nonce
+        }
+      }
+    }
+  });
+
+  return { message: getNonceMessage(nonce) };
+};
+
+export const authVerify = async ({
+  input: { signature, address: addressRaw }
+}) => {
+  try {
+    const address = addressRaw.toLowerCase();
+    const authDetails = await db.user
+      .findOne({
+        where: { address }
+      })
+      .authDetail();
+    if (!authDetails) throw new Error("No authentication started");
+
+    const { nonce, timestamp } = authDetails;
+    const startTime = new Date(timestamp);
+    if (new Date() - startTime > 5 * 60 * 1000)
+      throw new Error(
+        "The challenge must have been generated within the last 5 minutes"
+      );
+    const signerAddress = recoverPersonalSignature({
+      data: bufferToHex(Buffer.from(getNonceMessage(nonce), "utf8")),
+      sig: signature
+    });
+    if (address !== signerAddress.toLowerCase())
+      throw new Error("invalid signature");
+
+    const token = jwt.sign({ address }, process.env.JWT_SECRET, {
+      expiresIn: "5h"
+    });
+    return { token };
+  } catch (e) {
+    throw new Error(e);
+  }
+};
 ```
 
-Done! Continue normally using the official RedwoodJS docs on authentication: https://redwoodjs.com/docs/authentication
+Last step, we need to create a secret for issuing jwt tokens.
 
-## Usage
+```bash
+openssl rand -base64 48
+```
 
-TODO
+Add the result as `JWT_SECRET` to your .env file.
+
+Done! You can use your shiny new Ethereum auth, just like any other RedwoodJS auth. Here's a quick example. Read more in the official RedwoodJS docs https://redwoodjs.com/docs/authentication
+
+```js
+// web/src/pages/LoginPage/LoginPage.js
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useAuth } from "@redwoodjs/auth";
+import { useParams } from "@redwoodjs/router";
+
+const LoginPage = () => {
+  const { logIn } = useAuth();
+  const { redirectTo } = useParams();
+
+  const onLogin = async () => {
+    await logIn();
+    navigate(redirectTo || routes.home());
+  };
+
+  return (
+    <>
+      <h1>LoginPage</h1>
+      <p>
+        You must have an ethereum wallet, such as MetaMask, installed in your
+        browser
+      </p>
+      <button onClick={onLogin}>Log in with Ethereum</button>
+    </>
+  );
+};
+
+export default LoginPage;
+```
 
 ## Additional Resources
 
@@ -85,8 +220,6 @@ Once you have things working, these resources may be helpful for adapting this p
 ### Implementing Role-based Access Control (RBAC)
 
 https://redwoodjs.com/cookbook/role-based-access-control-rbac
-
-### ✨ [Demo](https://redwood-web3-login-demo.vercel.app/)
 
 ## Contributing
 
