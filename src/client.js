@@ -21,7 +21,7 @@ export const getErrorResponse = (error, functionName) => {
   const errorText = typeof error === "string" ? error : error.message;
   const res = {
     /* eslint-disable-nextline i18next/no-literal-string */
-    message: `Error web3.${functionName}(): ${errorText}`
+    message: `Error ethereumAuth.${functionName}(): ${errorText}`
   };
   const ABORTED = "aborted";
   const EXCEPTION = "exception";
@@ -107,41 +107,52 @@ export const signMessage = async ({ walletProvider, message }) => {
 // export type Ethereum = InstanceType<typeof EthereumAuthClient>;
 
 class EthereumAuthClient {
-  constructor({ graphQLClient }) {
-    if (!graphQLClient)
+  constructor({ makeRequest, debug }) {
+    if (!makeRequest)
       throw new Error(
-        "You must provide a graphQLClient to instantiate EthereumAuthClient"
+        'You must provide "makeRequest" to instantiate EthereumAuthClient'
       );
-    this.graphQLClient = graphQLClient;
+    this.makeRequest = makeRequest;
+    this.debug = debug;
   }
 
   async login() {
     const {
       walletAddress,
       walletProvider,
-      error: errorUnlocking,
+      error: unlockError,
       hasWallet
-    } = await unlockBrowser({ debug: true });
+    } = await unlockBrowser({ debug: this.debug });
+
+    if (unlockError) {
+      if (this.debug) console.log(unlockError);
+      return;
+    }
 
     const {
       data: {
         authChallenge: { message }
       }
-    } = await this.graphQLClient.mutate({
+    } = await this.makeRequest({
       mutation: AUTH_CHALLENGE_MUTATION,
       variables: { input: { address: walletAddress } }
     });
 
-    const { signature } = await signMessage({
+    const { signature, error: signError } = await signMessage({
       walletProvider,
       message
     });
+
+    if (signError) {
+      if (this.debug) console.log(signError);
+      return;
+    }
 
     const {
       data: {
         authVerify: { token }
       }
-    } = await this.graphQLClient.mutate({
+    } = await this.makeRequest({
       mutation: AUTH_VERIFY_MUTATION,
       variables: { input: { address: walletAddress, signature } }
     });

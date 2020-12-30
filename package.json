@@ -1,6 +1,6 @@
 {
   "name": "@oneclickdapp/ethereum-auth",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Auth provider for RedwoodJS using Ethererum",
   "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",
   "main": "dist/index.js",

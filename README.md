@@ -18,6 +18,8 @@ This package was inspired from a [lengthy tutorial](https://patrickgallagher.dev
 
 ### ✨ [Demo](https://redwood-web3-login-demo.vercel.app/)
 
+Demo [source code](https://github.com/pi0neerpat/redwood-web3-login-demo)
+
 ## Setup
 
 If you haven't created a redwood app yet, you can do so now. See my [introductory blog post](https://patrickgallagher.dev/blog/2020/11/18/web3-redwood-intro/using-redwoodjs-to-create-an-ethereum-app) for more help getting started.
