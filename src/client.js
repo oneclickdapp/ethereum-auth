@@ -1,7 +1,7 @@
 import { Web3Provider } from "@ethersproject/providers";
 import gql from "graphql-tag";
 
-const LOCAL_TOKEN_KEY = "wallet_auth_token";
+const LOCAL_TOKEN_KEY = "ethereum_auth_token";
 
 const AUTH_CHALLENGE_MUTATION = gql`
   mutation AuthChallengeMutation($input: AuthChallengeInput!) {
@@ -21,7 +21,7 @@ export const getErrorResponse = (error, functionName) => {
   const errorText = typeof error === "string" ? error : error.message;
   const res = {
     /* eslint-disable-nextline i18next/no-literal-string */
-    message: `Error ethereumAuth.${functionName}(): ${errorText}`
+    message: `Error ethereum-auth.${functionName}(): ${errorText}`
   };
   const ABORTED = "aborted";
   const EXCEPTION = "exception";

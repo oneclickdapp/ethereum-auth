@@ -22,8 +22,6 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.0.4",
-    "@walletconnect/web3-provider": "^1.2.0-alpha.0",
-    "walletlink": "^2.0.2",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0"
   },
