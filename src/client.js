@@ -133,9 +133,8 @@ class EthereumAuthClient {
       data: {
         authChallenge: { message }
       }
-    } = await this.makeRequest({
-      mutation: AUTH_CHALLENGE_MUTATION,
-      variables: { input: { address: walletAddress } }
+    } = await this.makeRequest(AUTH_CHALLENGE_MUTATION, {
+      input: { address: walletAddress }
     });
 
     const { signature, error: signError } = await signMessage({
@@ -152,9 +151,8 @@ class EthereumAuthClient {
       data: {
         authVerify: { token }
       }
-    } = await this.makeRequest({
-      mutation: AUTH_VERIFY_MUTATION,
-      variables: { input: { address: walletAddress, signature } }
+    } = await this.makeRequest(AUTH_VERIFY_MUTATION, {
+      input: { address: walletAddress, signature }
     });
     localStorage.setItem(LOCAL_TOKEN_KEY, token);
   }

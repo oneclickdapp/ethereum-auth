@@ -227,7 +227,7 @@ https://redwoodjs.com/cookbook/role-based-access-control-rbac
 
 If you're only editing this package, then you only need to update `@oneclickdapp/ethereum-auth` in your test redwood app. You can ignore the rest of this section.
 
-If you're changes affect how RedwoodJS uses this package, then you'll need to do a bit more work. Things that may be affected include decoders in `@redwoodjs/api`, frontend tooling in `@redwoodjs/auth`, and CLI generators in `@redwoodjs/cli`. Feel free to adjust the commands below depending on which of these packages your changes affect.
+If you're changes affect how internal stuff in RedwoodJS uses this package, then you'll need to do a bit more work. Things that may be affected include decoders in `@redwoodjs/api`, frontend tooling in `@redwoodjs/auth`, and CLI generators in `@redwoodjs/cli`. Feel free to adjust the commands below depending on which of these packages your changes affect.
 
 Unfortunately, `yarn link` will not work for redwood local development (sorry!). Please follow the **Local Package Registry Emulation** method here https://github.com/redwoodjs/redwood/blob/main/CONTRIBUTING.md#local-development
 
