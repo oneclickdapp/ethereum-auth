@@ -14,9 +14,9 @@
 
 This package was inspired from a [lengthy tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) I wrote on adding Ethereum auth to Redwood. If you're planning to implement your own custom auth to RedwoodJS (aside from Ethereum), you may find that tutorial useful.
 
-### ✨ [Demo](https://redwood-web3-login-demo.vercel.app/)
+### ✨ [Demo](https://redwood-ethereum-login-demo.vercel.app/)
 
-Demo [source code](https://github.com/pi0neerpat/redwood-web3-login-demo)
+Demo [source code](https://github.com/oneclickdapp/redwood-ethereum-login-demo)
 
 ## Setup
 
