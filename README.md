@@ -18,6 +18,22 @@ This package was inspired from a [lengthy tutorial](https://patrickgallagher.dev
 
 Demo [source code](https://github.com/oneclickdapp/redwood-ethereum-login-demo)
 
+## Overview
+
+This package enables the full suite of tooling that `@redwoodjs/auth` provides. Read more about auth in the official RedwoodJS docs https://redwoodjs.com/docs/authentication
+
+```js
+import { useAuth } from "@redwoodjs/auth";
+
+const LoginPage = () => {
+  const { logIn } = useAuth();
+
+  const onClick = async () => {
+    // Trigger wallet unlock & message signature
+    await logIn();
+  };
+```
+
 ## Setup
 
 If you haven't created a redwood app yet, you can do so now. See my [introductory blog post](https://patrickgallagher.dev/blog/2020/11/18/web3-redwood-intro/using-redwoodjs-to-create-an-ethereum-app) for more help getting started.
@@ -181,7 +197,7 @@ openssl rand -base64 48
 
 Add the result as `ETHEREUM_JWT_SECRET` to your .env file.
 
-Done! You can use your shiny new Ethereum auth, just like any other RedwoodJS auth. Here's a quick example. Read more in the official RedwoodJS docs https://redwoodjs.com/docs/authentication
+Done! You can use your shiny new Ethereum auth. For a full example see https://github.com/oneclickdapp/redwood-ethereum-login-demo. In the meantime, here's a quick snippet to get you started.
 
 ```js
 // web/src/pages/LoginPage/LoginPage.js
@@ -215,11 +231,10 @@ export default LoginPage;
 
 ## Additional Resources
 
-Once you have things working, these resources may be helpful for adapting this package to your use-case. More docs/examples are welcome here!
+Now that you've completed setup, you might find these resources useful. More docs/examples are welcome here!
 
-### Implementing Role-based Access Control (RBAC)
-
-https://redwoodjs.com/cookbook/role-based-access-control-rbac
+- Tutorial II Role-based access control (RBAC) https://redwoodjs.com/tutorial2/role-based-authorization-control-rbac
+- Cookbook RBAC https://redwoodjs.com/cookbook/role-based-access-control-rbac
 
 ## Contributing
 
@@ -251,10 +266,9 @@ yarn upgrade @redwoodjs/auth@dev @redwoodjs/api@dev @redwoodjs/api@cli --no-lock
 
 ## Planned features
 
-### Add additional wallet providers
-
-- `walletlink` v1.0.0
-- `@walletconnect/web3-provider` v1.0.13
+- Change default method to use `walletconnect`
+- Export typescript types here for the user object, instead of declaring them inside `@redwoodjs/auth`
+- Add support for `walletlink`
 
 ## Publishing
 
