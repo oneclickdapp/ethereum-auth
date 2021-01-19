@@ -163,7 +163,7 @@ export const authVerify = async ({
     if (address !== signerAddress.toLowerCase())
       throw new Error("invalid signature");
 
-    const token = jwt.sign({ address }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ address }, process.env.ETHEREUM_JWT_SECRET, {
       expiresIn: "5h"
     });
     return { token };
@@ -179,7 +179,7 @@ Last step, we need to create a secret for issuing jwt tokens.
 openssl rand -base64 48
 ```
 
-Add the result as `JWT_SECRET` to your .env file.
+Add the result as `ETHEREUM_JWT_SECRET` to your .env file.
 
 Done! You can use your shiny new Ethereum auth, just like any other RedwoodJS auth. Here's a quick example. Read more in the official RedwoodJS docs https://redwoodjs.com/docs/authentication
 
