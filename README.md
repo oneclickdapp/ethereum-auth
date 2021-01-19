@@ -38,14 +38,14 @@ Next we need to update our models. Add `address` to the **User** model, and crea
 ```js
 // api/db/schema.prisma
 model User {
-  id    String     @id @default(uuid())
-  address String  @unique
+  id         String     @id @default(uuid())
+  address    String     @unique
   authDetail AuthDetail
 }
 
 model AuthDetail {
-  id    String     @id @default(uuid())
-  nonce String
+  id        String   @id @default(uuid())
+  nonce     String
   timestamp DateTime @default(now())
 }
 ```
