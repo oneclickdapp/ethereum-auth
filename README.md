@@ -46,7 +46,7 @@ First let's do some scaffolding and install the necessary packages. This is wher
 
 ```bash
 cd myDapp
-yarn rw generate auth ethereum
+yarn rw setup auth ethereum
 ```
 
 Next we need to update our models. Add `address` to the **User** model, and create a new `AuthDetail` model.
