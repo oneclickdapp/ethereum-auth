@@ -1,7 +1,11 @@
 import { Web3Provider } from "@ethersproject/providers";
 import gql from "graphql-tag";
 
-const LOCAL_TOKEN_KEY = "ethereum_auth_token";
+import { unlockBrowser } from "./browser";
+import { unlockWalletConnect } from "./walletConnect";
+import { getErrorResponse, signMessage } from "./utils";
+
+import { LOCAL_TOKEN_KEY, WALLET_TYPES } from "./constants";
 
 const AUTH_CHALLENGE_MUTATION = gql`
   mutation AuthChallengeMutation($input: AuthChallengeInput!) {
@@ -17,112 +21,31 @@ const AUTH_VERIFY_MUTATION = gql`
     }
   }
 `;
-export const getErrorResponse = (error, functionName) => {
-  const errorText = typeof error === "string" ? error : error.message;
-  const res = {
-    /* eslint-disable-nextline i18next/no-literal-string */
-    message: `Error ethereum-auth.${functionName}(): ${errorText}`
-  };
-  const ABORTED = "aborted";
-  const EXCEPTION = "exception";
-  const UNKOWN = "unknown error type";
-  if (error.code) {
-    res.code = error.code;
-    switch (error.code) {
-      case 4001:
-        res.txErrorType = ABORTED;
-        break;
-      case -32016:
-        res.txErrorType = EXCEPTION;
-        break;
-      default:
-        res.txErrorType = UNKOWN;
-    }
-  }
-  return { error: res };
-};
-
-export const isWeb3EnabledBrowser = () =>
-  typeof window !== "undefined" && typeof window.ethereum !== "undefined";
-
-export const unlockBrowser = async ({ debug }) => {
-  try {
-    if (!isWeb3EnabledBrowser()) {
-      return { hasWallet: false, isUnlocked: false };
-    }
-    window.ethereum.autoRefreshOnNetworkChange = false;
-
-    const walletAddress = await window.ethereum.request({
-      method: "eth_requestAccounts",
-      params: [
-        {
-          eth_accounts: {}
-        }
-      ]
-    });
-
-    const walletProvider = new Web3Provider(window.ethereum);
-
-    const network = await walletProvider.getNetwork();
-    if (debug)
-      /* eslint-disable-next-line no-console */
-      console.log(
-        "Web3Browser wallet loaded: ",
-        JSON.stringify({ walletAddress, network })
-      );
-    return {
-      hasWallet: true,
-      walletAddress: walletAddress[0],
-      walletProvider
-    };
-  } catch (error) {
-    if (isWeb3EnabledBrowser()) {
-      if (debug)
-        /* eslint-disable-next-line no-console */
-        console.log("Web3 detected in browser, but wallet unlock failed");
-      return {
-        hasWallet: true,
-        isUnlocked: false,
-        ...getErrorResponse(error, "unlockBrowser")
-      };
-    }
-    return {
-      hasWallet: false,
-      isUnlocked: false,
-      ...getErrorResponse(error, "unlockBrowser")
-    };
-  }
-};
-
-export const signMessage = async ({ walletProvider, message }) => {
-  try {
-    const signature = await walletProvider.getSigner(0).signMessage(message);
-    return { signature };
-  } catch (error) {
-    return getErrorResponse(error, "signMessage");
-  }
-};
 
 // TODO: Add types to package, and enable typescript
 // export type Ethereum = InstanceType<typeof EthereumAuthClient>;
 
 class EthereumAuthClient {
-  constructor({ makeRequest, debug }) {
+  constructor({ makeRequest, type = WALLET_TYPES.browser, rpc, debug }) {
     if (!makeRequest)
       throw new Error(
         'You must provide "makeRequest" to instantiate EthereumAuthClient'
       );
     this.makeRequest = makeRequest;
     this.debug = debug;
+    this.type = type;
+    this.rpc = rpc;
   }
 
   async login() {
+    let unlock = unlockBrowser;
+    if (this.type === WALLET_TYPES.walletConnect) unlock = unlockWalletConnect;
     const {
       walletAddress,
       walletProvider,
       error: unlockError,
       hasWallet
-    } = await unlockBrowser({ debug: this.debug });
+    } = await unlock({ debug: this.debug });
 
     if (unlockError) {
       if (this.debug) console.log(unlockError);

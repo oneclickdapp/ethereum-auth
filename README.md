@@ -238,7 +238,15 @@ Now that you've completed setup, you might find these resources useful. More doc
 
 ## Contributing
 
-If you're only editing this package, then you only need to update `@oneclickdapp/ethereum-auth` in your test redwood app. You can ignore the rest of this section.
+### Basic
+
+If you're only editing this package, then you just link `@oneclickdapp/ethereum-auth` in your test redwood app.
+
+```bash
+yarn link @oneclickdapp/ethereum-auth
+```
+
+### Advanced
 
 If you're changes affect how internal stuff in RedwoodJS uses this package, then you'll need to do a bit more work. Things that may be affected include decoders in `@redwoodjs/api`, frontend tooling in `@redwoodjs/auth`, and CLI generators in `@redwoodjs/cli`. Feel free to adjust the commands below depending on which of these packages your changes affect.
 
