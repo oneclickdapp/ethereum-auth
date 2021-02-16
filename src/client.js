@@ -1,8 +1,7 @@
-import { Web3Provider } from "@ethersproject/providers";
 import gql from "graphql-tag";
 
 import { unlockBrowser } from "./browser";
-import { unlockWalletConnect } from "./walletConnect";
+import { unlockWalletConnect, disconnectWalletConnect } from "./walletConnect";
 import { getErrorResponse, signMessage } from "./utils";
 
 import { LOCAL_TOKEN_KEY, WALLET_TYPES } from "./constants";
@@ -26,61 +25,103 @@ const AUTH_VERIFY_MUTATION = gql`
 // export type Ethereum = InstanceType<typeof EthereumAuthClient>;
 
 class EthereumAuthClient {
-  constructor({ makeRequest, type = WALLET_TYPES.browser, rpc, debug }) {
+  constructor({
+    makeRequest,
+    rpc,
+    infuraId,
+    debug,
+    onNetworkChange,
+    onDisconnect
+  }) {
     if (!makeRequest)
       throw new Error(
         'You must provide "makeRequest" to instantiate EthereumAuthClient'
       );
     this.makeRequest = makeRequest;
     this.debug = debug;
-    this.type = type;
     this.rpc = rpc;
+    this.infuraId = infuraId;
+    this.onNetworkChange = onNetworkChange;
+    this.onDisconnect = onDisconnect;
   }
 
-  async login() {
-    let unlock = unlockBrowser;
-    if (this.type === WALLET_TYPES.walletConnect) unlock = unlockWalletConnect;
-    const {
-      walletAddress,
-      walletProvider,
-      error: unlockError,
-      hasWallet
-    } = await unlock({ debug: this.debug });
-
-    if (unlockError) {
-      if (this.debug) console.log(unlockError);
-      return;
-    }
-
-    const {
-      data: {
-        authChallenge: { message }
+  async login(type = WALLET_TYPES.browser) {
+    try {
+      let unlock = unlockBrowser;
+      if (type === WALLET_TYPES.walletConnect) {
+        if (!this.rpc && !this.infuraId)
+          throw Error(
+            "You must provide either an rpc or infuraId to use Wallet Connect"
+          );
+        unlock = unlockWalletConnect;
       }
-    } = await this.makeRequest(AUTH_CHALLENGE_MUTATION, {
-      input: { address: walletAddress }
-    });
+      const {
+        walletAddress,
+        walletProvider,
+        error: unlockError,
+        hasWallet
+      } = await unlock({
+        debug: this.debug,
+        infuraId: this.infuraId,
+        rpc: this.rpc,
+        onDisconnect: this.onDisconnect,
+        onNetworkChange: this.onNetworkChange
+      });
 
-    const { signature, error: signError } = await signMessage({
-      walletProvider,
-      message
-    });
-
-    if (signError) {
-      if (this.debug) console.log(signError);
-      return;
-    }
-
-    const {
-      data: {
-        authVerify: { token }
+      if (unlockError) {
+        // TODO Show unlock toast message
+        console.log(unlockError);
+        throw Error("We had trouble unlocking your wallet");
+        return;
       }
-    } = await this.makeRequest(AUTH_VERIFY_MUTATION, {
-      input: { address: walletAddress, signature }
-    });
-    localStorage.setItem(LOCAL_TOKEN_KEY, token);
+      let message;
+      try {
+        ({
+          data: {
+            authChallenge: { message }
+          }
+        } = await this.makeRequest(AUTH_CHALLENGE_MUTATION, {
+          input: { address: walletAddress }
+        }));
+      } catch (e) {
+        console.log(e);
+        throw Error("Couldn't get auth challenge from your server");
+      }
+
+      const { signature, error: signError } = await signMessage({
+        walletProvider,
+        message
+      });
+
+      if (signError) {
+        console.log(signError);
+        throw Error("Failed to get signature from user");
+      }
+
+      let token;
+      try {
+        ({
+          data: {
+            authVerify: { token }
+          }
+        } = await this.makeRequest(AUTH_VERIFY_MUTATION, {
+          input: { address: walletAddress, signature }
+        }));
+      } catch (e) {
+        console.log(e);
+        throw Error("Authentication failed");
+      }
+      localStorage.setItem(LOCAL_TOKEN_KEY, token);
+    } catch (e) {
+      console.log(
+        getErrorResponse(`${e}. See above error for more details.`, "login")
+          .error.message
+      );
+    }
   }
 
   logout() {
+    if (this.type === WALLET_TYPES.walletConnect) disconnectWalletConnect();
     return localStorage.removeItem(LOCAL_TOKEN_KEY);
   }
 

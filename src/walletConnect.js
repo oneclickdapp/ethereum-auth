@@ -10,16 +10,21 @@ export const disconnectWalletConnect = () => {
 
 export const unlockWalletConnect = async ({
   debug,
-  infuraKey,
+  infuraId,
+  rpc,
   onNetworkChange,
   onDisconnect
 }) => {
   try {
     const provider = new WalletConnectProvider({
-      infuraId: infuraKey // Required
+      infuraId,
+      rpc
     });
-    provider.on("chainChanged", onNetworkChange);
-    provider.on("close", () => onDisconnect());
+    // provider.on("chainChanged", onNetworkChange);
+    provider.on("close", () => {
+      disconnectWalletConnect();
+      onDisconnect && onDisconnect();
+    });
 
     await provider.enable();
     const walletProvider = new Web3Provider(provider);
@@ -34,7 +39,6 @@ export const unlockWalletConnect = async ({
     return {
       hasWallet: true,
       isUnlocked: true,
-      walletType: WALLET_CONNECT_ID,
       walletAddress,
       network,
       walletProvider
@@ -48,10 +52,10 @@ export const unlockWalletConnect = async ({
   }
 };
 
-export const checkClosedWalletConnect = async ({ debug, infuraKey }) => {
+export const checkClosedWalletConnect = async ({ debug, infuraId }) => {
   try {
     await new WalletConnectProvider({
-      infuraId: infuraKey
+      infuraId: infuraId
     });
     return localStorage.getItem(WALLET_CONNECT_LOCAL_KEY) !== "undefined";
   } catch (error) {

@@ -1,3 +1,5 @@
+import { Web3Provider } from "@ethersproject/providers";
+
 import { getErrorResponse } from "./utils";
 
 export const isWeb3EnabledBrowser = () =>

@@ -2,7 +2,7 @@ export const getErrorResponse = (error, functionName) => {
   const errorText = typeof error === "string" ? error : error.message;
   const res = {
     /* eslint-disable-nextline i18next/no-literal-string */
-    message: `Error ethereum-auth.${functionName}(): ${errorText}`
+    message: `Error @oneclickdapp/ethereum-auth ${functionName}(): ${errorText}`
   };
   const ABORTED = "aborted";
   const EXCEPTION = "exception";
@@ -26,6 +26,7 @@ export const getErrorResponse = (error, functionName) => {
 export const signMessage = async ({ walletProvider, message }) => {
   try {
     const signature = await walletProvider.getSigner(0).signMessage(message);
+    console.log(signature);
     return { signature };
   } catch (error) {
     return getErrorResponse(error, "signMessage");

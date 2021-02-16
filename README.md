@@ -4,13 +4,7 @@
   </a>
 </p>
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-> Auth provider for RedwoodJS using Ethererum
+> Auth provider for RedwoodJS using Ethererum.
 
 This package was inspired from a [lengthy tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) I wrote on adding Ethereum auth to Redwood. If you're planning to implement your own custom auth to RedwoodJS (aside from Ethereum), you may find that tutorial useful.
 
@@ -229,6 +223,29 @@ const LoginPage = () => {
 export default LoginPage;
 ```
 
+## Wallet Connect support
+
+You must pass an optional `rpc` or `infuraId` to use Wallet Connect.
+
+```
+ethereum = new EthereumAuthClient({
+  makeRequest,
+  // Note: you must set NODE_ENV manually when using Netlify
+  debug: process.NODE_ENV !== 'development',
+  infuraId: process.env.INFURA_ID,
+})
+```
+
+Read more about using the [rpc provider](https://docs.walletconnect.org/quick-start/dapps/web3-provider#provider-options).
+
+Then when you call `unlock()` pass the type "walletConnect".
+
+```js
+const { logIn, logOut, getCurrentUser } = useAuth()
+const onClickWalletConnect = async () => {
+  await logIn("walletConnect")
+```
+
 ## Additional Resources
 
 Now that you've completed setup, you might find these resources useful. More docs/examples are welcome here!
@@ -248,28 +265,14 @@ yarn link @oneclickdapp/ethereum-auth
 
 ### Advanced
 
-If you're changes affect how internal stuff in RedwoodJS uses this package, then you'll need to do a bit more work. Things that may be affected include decoders in `@redwoodjs/api`, frontend tooling in `@redwoodjs/auth`, and CLI generators in `@redwoodjs/cli`. Feel free to adjust the commands below depending on which of these packages your changes affect.
-
-Unfortunately, `yarn link` will not work for redwood local development (sorry!). Please follow the **Local Package Registry Emulation** method here https://github.com/redwoodjs/redwood/blob/main/CONTRIBUTING.md#local-development
-
-Once verdaccio is running, use this command to build the package you need.
+If you're changes affect how internal stuff in RedwoodJS uses this package, then you'll need to do a bit more work. Things that may be affected include decoders in `@redwoodjs/api`, frontend tooling in `@redwoodjs/auth`, and CLI generators in `@redwoodjs/cli`. Unfortunately, `yarn link` will not work for redwood local development. Please follow the guide here https://github.com/redwoodjs/redwood/blob/main/CONTRIBUTING.md#local-development for more help.
 
 ```bash
-./tasks/publish-local ./packages/auth
-# or
-./tasks/publish-local ./packages/api
-# or
-./tasks/publish-local ./packages/cli
-```
+# In the redwood repo
+yarn build:watch
 
-Then in your test redwood app
-
-```bash
-rm -rf ./node_modules/@redwoodjs/auth
-rm -rf ./node_modules/@redwoodjs/api
-rm -rf ./node_modules/@redwoodjs/cli
-
-yarn upgrade @redwoodjs/auth@dev @redwoodjs/api@dev @redwoodjs/api@cli --no-lockfile --registry http://localhost:4873/
+# Then in your example redwood app
+yarn rwt copy:watch ../redwood
 ```
 
 ## Planned features
