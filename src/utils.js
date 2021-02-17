@@ -26,7 +26,6 @@ export const getErrorResponse = (error, functionName) => {
 export const signMessage = async ({ walletProvider, message }) => {
   try {
     const signature = await walletProvider.getSigner(0).signMessage(message);
-    console.log(signature);
     return { signature };
   } catch (error) {
     return getErrorResponse(error, "signMessage");

@@ -72,8 +72,9 @@ class EthereumAuthClient {
         // TODO Show unlock toast message
         console.log(unlockError);
         throw Error("We had trouble unlocking your wallet");
-        return;
       }
+      if (!hasWallet) throw Error("No Web3 wallet present in the browser");
+
       let message;
       try {
         ({
