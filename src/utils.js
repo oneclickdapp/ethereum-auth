@@ -1,3 +1,7 @@
+import { keccak256 } from "@ethersproject/keccak256";
+import { toUtf8Bytes } from "@ethersproject/strings";
+import { arrayify } from "@ethersproject/bytes";
+
 export const getErrorResponse = (error, functionName) => {
   const errorText = typeof error === "string" ? error : error.message;
   const res = {
@@ -23,8 +27,21 @@ export const getErrorResponse = (error, functionName) => {
   return { error: res };
 };
 
-export const signMessage = async ({ walletProvider, message }) => {
+const preparePayloadForSigning = rawMessage => {
+  const rawMessageLength = new Blob([rawMessage]).size;
+  const message = toUtf8Bytes(
+    "\x19Ethereum Signed Message:\n" + rawMessageLength + rawMessage
+  );
+  return arrayify(keccak256(message));
+};
+
+export const signMessage = async ({
+  walletProvider,
+  message,
+  isWalletConnect
+}) => {
   try {
+    if (isWalletConnect) message = preparePayloadForSigning(message);
     const signature = await walletProvider.getSigner(0).signMessage(message);
     return { signature };
   } catch (error) {

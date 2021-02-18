@@ -47,8 +47,9 @@ class EthereumAuthClient {
 
   async login(type = WALLET_TYPES.browser) {
     try {
+      const isWalletConnect = WALLET_TYPES.walletConnect;
       let unlock = unlockBrowser;
-      if (type === WALLET_TYPES.walletConnect) {
+      if (isWalletConnect) {
         if (!this.rpc && !this.infuraId)
           throw Error(
             "You must provide either an rpc or infuraId to use Wallet Connect"
@@ -91,7 +92,8 @@ class EthereumAuthClient {
 
       const { signature, error: signError } = await signMessage({
         walletProvider,
-        message
+        message,
+        isWalletConnect
       });
 
       if (signError) {
