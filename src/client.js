@@ -47,7 +47,7 @@ class EthereumAuthClient {
 
   async login(type = WALLET_TYPES.browser) {
     try {
-      const isWalletConnect = WALLET_TYPES.walletConnect;
+      const isWalletConnect = type === WALLET_TYPES.walletConnect;
       let unlock = unlockBrowser;
       if (isWalletConnect) {
         if (!this.rpc && !this.infuraId)

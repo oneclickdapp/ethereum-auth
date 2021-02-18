@@ -4,29 +4,37 @@
   </a>
 </p>
 
-> Auth provider for RedwoodJS using Ethererum.
+> Ethereum auth provider for RedwoodJS
 
-This package was inspired from a [lengthy tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) I wrote on adding Ethereum auth to Redwood. If you're planning to implement your own custom auth to RedwoodJS (aside from Ethereum), you may find that tutorial useful.
+Looking to implement your own custom Redwood Auth? You may this [tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) helpful.
 
 ### ✨ [Demo](https://redwood-ethereum-login-demo.vercel.app/)
 
 Demo [source code](https://github.com/oneclickdapp/redwood-ethereum-login-demo)
 
-## Overview
+<div align="center" >
+ <img margin="0 0 10px" width="500" src="./ocd-ethereum-auth.gif"/>
+</div>
 
-This package enables the full suite of tooling that `@redwoodjs/auth` provides. Read more about auth in the official RedwoodJS docs https://redwoodjs.com/docs/authentication
+## Quick Start
 
 ```js
-import { useAuth } from "@redwoodjs/auth";
+const ethereum = new EthereumAuthClient({
+  makeRequest,
+  debug: process.NODE_ENV !== "development",
+  infuraId: process.env.INFURA_ID
+});
 
-const LoginPage = () => {
-  const { logIn } = useAuth();
+const { logIn, logOut, getCurrentUser, client } = useAuth();
 
-  const onClick = async () => {
-    // Trigger wallet unlock & message signature
-    await logIn();
-  };
+// Trigger authentication
+await logIn("walletConnect");
+
+// Access the ethers provider directly
+await client.provider.getSigner();
 ```
+
+If this is your first time using Redwood Auth, you should check out the official Redwood [auth docs](https://redwoodjs.com/docs/authentication)
 
 ## Setup
 
