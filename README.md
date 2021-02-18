@@ -29,9 +29,6 @@ const { logIn, logOut, getCurrentUser, client } = useAuth();
 
 // Trigger authentication
 await logIn("walletConnect");
-
-// Access the ethers provider directly
-await client.provider.getSigner();
 ```
 
 If this is your first time using Redwood Auth, you should check out the official Redwood [auth docs](https://redwoodjs.com/docs/authentication)
@@ -231,25 +228,25 @@ const LoginPage = () => {
 export default LoginPage;
 ```
 
-## Wallet Connect support
+## Wallet Connect
 
 You must pass an optional `rpc` or `infuraId` to use Wallet Connect.
 
-```
+```js
 ethereum = new EthereumAuthClient({
   makeRequest,
   // Note: you must set NODE_ENV manually when using Netlify
-  debug: process.NODE_ENV !== 'development',
-  infuraId: process.env.INFURA_ID,
-})
+  debug: process.NODE_ENV !== "development",
+  infuraId: process.env.INFURA_ID
+  // For rpc see https://docs.walletconnect.org/quick-start/dapps/web3-provider#provider-options
+});
 ```
 
-Read more about using the [rpc provider](https://docs.walletconnect.org/quick-start/dapps/web3-provider#provider-options).
-
-Then when you call `unlock()` pass the type "walletConnect".
+Then pass the type "walletConnect" when you unlock
 
 ```js
 const { logIn, logOut, getCurrentUser } = useAuth()
+
 const onClickWalletConnect = async () => {
   await logIn("walletConnect")
 ```
@@ -283,11 +280,12 @@ yarn build:watch
 yarn rwt copy:watch ../redwood
 ```
 
-## Planned features
+## TODO
 
-- Change default method to use `walletconnect`
-- Export typescript types here for the user object, instead of declaring them inside `@redwoodjs/auth`
-- Add support for `walletlink`
+- [x] Add support for `walletconnect`
+- [ ] Allow direct access to the ethers `provider` on the client.
+- [ ] Export typescript types here for the user object, instead of declaring them inside `@redwoodjs/auth`
+- [ ] Add support for `walletlink`
 
 ## Publishing
 
