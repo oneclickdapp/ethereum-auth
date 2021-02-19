@@ -283,6 +283,7 @@ yarn rwt copy:watch ../redwood
 ## TODO
 
 - [x] Add support for `walletconnect`
+- [ ] Add ethereum-auth the redwood (auth playground)[https://github.com/redwoodjs/playground-auth]
 - [ ] Allow direct access to the ethers `provider` on the client.
 - [ ] Export typescript types here for the user object, instead of declaring them inside `@redwoodjs/auth`
 - [ ] Add support for `walletlink`
