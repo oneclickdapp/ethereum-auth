@@ -25,10 +25,12 @@
     "@ethersproject/providers": "^5.0.4",
     "@ethersproject/strings": "^5.0.9",
     "@walletconnect/web3-provider": "^1.5.1",
+    "graphql": "^15.3.0",
+    "graphql-tag": "^2.11.0"
+  },
+  "peerDependencies": {
     "assert": "^2.0.0",
     "crypto-browserify": "^3.12.0",
-    "graphql": "^15.3.0",
-    "graphql-tag": "^2.11.0",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
     "stream-browserify": "^3.0.0",
@@ -48,11 +50,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
     "lint-staged": "^10.2.2",
-    "prettier": "^1.19.1",
-    "webpack": "^5.51.1",
-    "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.10",
-    "webpack-merge": "^5.7.3"
+    "prettier": "^1.19.1"
   },
   "repository": {
     "type": "git",
