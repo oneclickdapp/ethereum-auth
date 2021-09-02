@@ -310,6 +310,8 @@ const onClickWalletConnect = async () => {
   await logIn("walletConnect")
 ```
 
+> Note: Don't forget to update Redwood.toml if you add new environment variables
+
 ## Additional Resources
 
 Now that you've completed setup, you might find these resources useful. More docs/examples are welcome here!

@@ -7,9 +7,9 @@ const LoginPage = () => {
   const { logIn } = useAuth()
   const { redirectTo } = useParams()
 
-  const onLogin = async () => {
+  const onLogin = async (walletType) => {
     try {
-      await logIn()
+      await logIn(walletType)
       navigate(redirectTo || routes.home())
     } catch (e) {
       console.log(e)
@@ -27,17 +27,21 @@ const LoginPage = () => {
       <h1 className="text-xl tracking-tight font-extrabold text-gray-900 sm:text-2xl md:text-3xl">
         Login
       </h1>
-      <p className="mt-4">
-        You must have an ethereum wallet, such as MetaMask, installed in your
-        browser
-      </p>
       <button
         className={
           'mt-4 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700'
         }
-        onClick={onLogin}
+        onClick={() => onLogin()}
       >
-        Log in with Ethereum
+        Log in with Ethereum Browser
+      </button>
+      <button
+        className={
+          'mt-4 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700'
+        }
+        onClick={() => onLogin('walletConnect')}
+      >
+        Log in with Wallet Connect
       </button>
     </>
   )
