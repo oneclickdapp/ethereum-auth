@@ -54,11 +54,10 @@ model AuthDetail {
 }
 ```
 
-Now lets use the generator for our new models. We only need the **sdl** for `AuthDetail`.
+Now lets use the generator for our user model.
 
 ```bash
 yarn rw generate scaffold user
-yarn rw generate sdl AuthDetail
 ```
 
 Awesomesauce! Let's spin up our database and apply the changes:
@@ -183,6 +182,13 @@ openssl rand -base64 48
 ```
 
 Use the resulting string for `ETHEREUM_JWT_SECRET` in your `.env` file.
+
+And don't forget to update your `Redwood.toml` for including the environment variables in your hosted app.
+
+```toml
+[web]
+  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET', 'INFURA_ID']
+```
 
 ### Webpack V5
 
