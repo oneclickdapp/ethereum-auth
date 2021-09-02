@@ -184,7 +184,7 @@ export default LoginPage;
 
 ### Wallet Connect
 
-You must pass an optional `rpc` or `infuraId` to use Wallet Connect.
+You must pass at least one value `rpc` or `infuraId` to use Wallet Connect.
 
 ```js
 ethereum = new EthereumAuthClient({
@@ -196,7 +196,7 @@ ethereum = new EthereumAuthClient({
 });
 ```
 
-Then pass the type "walletConnect" when you unlock
+Specify the wallet type by passing a String to `logIn()`
 
 ```js
 const { logIn, logOut, getCurrentUser } = useAuth()
