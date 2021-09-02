@@ -2356,16 +2356,16 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oneclickdapp/ethereum-auth@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/@oneclickdapp/ethereum-auth/-/ethereum-auth-0.2.1.tgz#b1f2895f82bbc3dd0be51707d4734957c74117d5"
-  integrity sha512-jpyuaIHmtVdseD6Gn9slZjzEwP3x4nL2mMRDTerqlN3D4aLas5J/gFWw3pGrw5b6Wk/NYfoXCxIhMD2jUgAa0g==
+"@oneclickdapp/ethereum-auth@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.npmjs.org/@oneclickdapp/ethereum-auth/-/ethereum-auth-0.3.0.tgz#147bfe3c20e0928a1a387eaf5353361bc78e8380"
+  integrity sha512-ipl9QSESsp17ARC6I1nYKYs8GIp9pDubVWl7tT83bzlRTUcneJRHbmoFcfKhNYFldTllllUaBTKhT5XqJuLVbQ==
   dependencies:
     "@ethersproject/bytes" "^5.0.10"
     "@ethersproject/keccak256" "^5.0.8"
     "@ethersproject/providers" "^5.0.4"
     "@ethersproject/strings" "^5.0.9"
-    "@walletconnect/web3-provider" "^1.3.6"
+    "@walletconnect/web3-provider" "^1.5.1"
     graphql "^15.3.0"
     graphql-tag "^2.11.0"
 
@@ -4660,7 +4660,7 @@
     js-sha3 "0.8.0"
     query-string "6.13.5"
 
-"@walletconnect/web3-provider@^1.3.6":
+"@walletconnect/web3-provider@^1.5.1":
   version "1.6.5"
   resolved "https://registry.npmjs.org/@walletconnect/web3-provider/-/web3-provider-1.6.5.tgz#7c4ac2f89ddda1a4069d500ed29cc4396e7fdade"
   integrity sha512-SeC7+1saHxvFn2wjt/3F0sTkDemHDNDbMkdZ3jtA7vjEw91Q0CmaYIuZk2UxyVM+tC1jL1l4yci/sgaFeAcXpQ==
