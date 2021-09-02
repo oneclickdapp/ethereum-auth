@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "description": "Ethereum wallet login provider for RedwoodJS projects",
   "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",
-  "main": "dist/main.js",
+  "module": "src/index.js",
   "lint-staged": {
     "*.js": []
   },

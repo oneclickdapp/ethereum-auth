@@ -184,6 +184,59 @@ openssl rand -base64 48
 
 Use the resulting string for `ETHEREUM_JWT_SECRET` in your `.env` file.
 
+### Webpack V5
+
+Webpack V5 no longer injects some node modules automatically, which are required by the `@walletconnect` dependencies. To fix this issue, you must add them manually to the webpack config in your RedwoodJS app.
+
+> Want to help out by removing this extra step? The [`@walletconnect` V5 update issue](https://github.com/WalletConnect/walletconnect-monorepo/issues/584) is waiting for a champion!
+
+If you haven't run this command already, create the config file:
+
+```bash
+yarn rw setup webpack
+```
+
+Then add the following to your config in `web/config/webpack.config.js`:
+
+```js
+const webpack = require("webpack");
+
+// See https://github.com/WalletConnect/walletconnect-monorepo/issues/584
+config.resolve.fallback = {
+  os: require.resolve(`os-browserify/browser`),
+  https: require.resolve(`https-browserify`),
+  http: require.resolve(`stream-http`),
+  stream: require.resolve(`stream-browserify`),
+  util: require.resolve(`util/`),
+  url: require.resolve(`url/`),
+  assert: require.resolve(`assert/`),
+  crypto: require.resolve(`crypto-browserify`)
+};
+config.plugins.push(
+  new webpack.ProvidePlugin({
+    process: "process/browser",
+    Buffer: ["buffer", "Buffer"]
+  })
+);
+```
+
+Now install the missing 8 packages:
+
+```bash
+cd web
+yarn add stream-browserify stream-http crypto-browserify https-browserify os-browserify util url assert
+```
+
+Test the app builds properly in development and production
+
+```bash
+yarn rw dev
+
+# It works in development? Great!
+
+yarn rw build
+```
+
 Done! You're ready to start using your shiny new Ethereum auth just like any other RedwoodJS auth provider.
 
 ## Usage
@@ -272,12 +325,6 @@ Then in your app, use the local linked package
 ```bash
 yarn link @oneclickdapp/ethereum-auth
 ```
-
-### Webpack V5
-
-Webpack V5 no longer injects some node modules automatically, which are required by the `@walletconnect` dependencies. To fix this issue, I've added them manually to the webpack config:
-
-Want to help out by removing these extra dependencies? The [`@walletconnect` V5 update issue](https://github.com/WalletConnect/walletconnect-monorepo/issues/584) is waiting for a champion!
 
 ### Advanced
 
