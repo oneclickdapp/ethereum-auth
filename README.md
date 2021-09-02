@@ -8,7 +8,9 @@
 
 ## ✨ See it
 
-Demo [RedwoodJS App](https://redwood-ethereum-login-demo.vercel.app/) & the source code can be found in `/examples`
+[Demo RedwoodJS App](https://redwood-ethereum-login-demo.vercel.app/)
+
+See source code in `/examples`
 
 <div align="center" >
  <img margin="0 0 10px" width="500" src="./ocd-ethereum-auth.gif"/>
@@ -35,7 +37,9 @@ cd myDapp
 yarn rw setup auth ethereum
 ```
 
-Next we need to update our models. Add `address` to the **User** model, and create a new `AuthDetail` model.
+This command should have created a new `ethereumAuth` service and sdl files, and installed some dependencies (including this package). If you're curious how the auth service works, check out `api/src/services/ethereumAuth/ethereumAuth.js`
+
+Next we need to update our models. Add `address` to the **User** model, and create a new `AuthDetail` model:
 
 ```js
 // api/db/schema.prisma
@@ -66,115 +70,6 @@ Awesomesauce! Let's spin up our database and apply the changes:
 yarn rw prisma migrate dev
 ```
 
-### Services
-
-Now let's make a service to perform authentication. Create a\ file `ethereumAuth.sdl.js` in `api/src/graphql/`
-
-```js
-// api/src/graphql/ethereumAuth.sdl.js
-export const schema = gql`
-  type Mutation {
-    authChallenge(input: AuthChallengeInput!): AuthChallengeResult
-    authVerify(input: AuthVerifyInput!): AuthVerifyResult
-  }
-
-  input AuthChallengeInput {
-    address: String!
-  }
-
-  type AuthChallengeResult {
-    message: String!
-  }
-
-  input AuthVerifyInput {
-    signature: String!
-    address: String!
-  }
-
-  type AuthVerifyResult {
-    token: String!
-  }
-`;
-```
-
-Then create a file `ethereumAuth.js` in `api/src/services/ethereumAuth`
-
-```js
-// api/src/services/ethereumAuth/ethereumAuth.js
-import { AuthenticationError } from "@redwoodjs/api";
-
-import { bufferToHex } from "ethereumjs-util";
-import { recoverPersonalSignature } from "eth-sig-util";
-import jwt from "jsonwebtoken";
-
-import { db } from "src/lib/db";
-
-const NONCE_MESSAGE =
-  "Please prove you control this wallet by signing this random text: ";
-
-const getNonceMessage = nonce => NONCE_MESSAGE + nonce;
-
-export const authChallenge = async ({ input: { address: addressRaw } }) => {
-  const nonce = Math.floor(Math.random() * 1000000).toString();
-  const address = addressRaw.toLowerCase();
-  await db.user.upsert({
-    where: { address },
-    update: {
-      authDetail: {
-        update: {
-          nonce,
-          timestamp: new Date()
-        }
-      }
-    },
-    create: {
-      address,
-      authDetail: {
-        create: {
-          nonce
-        }
-      }
-    }
-  });
-
-  return { message: getNonceMessage(nonce) };
-};
-
-export const authVerify = async ({
-  input: { signature, address: addressRaw }
-}) => {
-  try {
-    const address = addressRaw.toLowerCase();
-    const authDetails = await db.user
-      .findOne({
-        where: { address }
-      })
-      .authDetail();
-    if (!authDetails) throw new Error("No authentication started");
-
-    const { nonce, timestamp } = authDetails;
-    const startTime = new Date(timestamp);
-    if (new Date() - startTime > 5 * 60 * 1000)
-      throw new Error(
-        "The challenge must have been generated within the last 5 minutes"
-      );
-    const signerAddress = recoverPersonalSignature({
-      data: bufferToHex(Buffer.from(getNonceMessage(nonce), "utf8")),
-      sig: signature
-    });
-    if (address !== signerAddress.toLowerCase())
-      throw new Error("invalid signature");
-
-    const token = jwt.sign({ address }, process.env.ETHEREUM_JWT_SECRET, {
-      expiresIn: "5h"
-    });
-    return { token };
-  } catch (e) {
-    throw new Error(e);
-  }
-};
-```
-
 We're almost there! Create a server secret for issuing jwt tokens:
 
 ```bash
@@ -187,7 +82,7 @@ And don't forget to update your `Redwood.toml` for including the environment var
 
 ```toml
 [web]
-  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET']
+  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET', 'DATABASE_URL', 'INFURA_ID']
 ```
 
 ### Webpack V5
