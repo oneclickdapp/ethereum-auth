@@ -3,19 +3,20 @@ module.exports = {
     [
       "@babel/preset-env",
       {
-        targets: {
-          esmodules: true
-        }
-      }
-    ]
-  ],
-  plugins: [
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        regenerator: true,
-        corejs: 3
+        modules: "commonjs"
+        // targets: {
+        //   esmodules: true
+        // }
       }
     ]
   ]
+  // plugins: [
+  //   [
+  //     "@babel/plugin-transform-runtime",
+  //     {
+  //       regenerator: true,
+  //       corejs: 3
+  //     }
+  //   ]
+  // ]
 };

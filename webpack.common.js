@@ -15,7 +15,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.m?jsx?$/,
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader"
@@ -23,12 +23,12 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new webpack.ProvidePlugin({
-      process: "process/browser",
-      Buffer: ["buffer", "Buffer"]
-    })
-  ],
+  // plugins: [
+  //   new webpack.ProvidePlugin({
+  //     process: "process/browser",
+  //     Buffer: ["buffer", "Buffer"]
+  //   })
+  // ],
   resolve: {
     alias: { process: "process/browser" },
     fallback: {
@@ -41,14 +41,14 @@ module.exports = {
       assert: require.resolve(`assert/`),
       crypto: require.resolve(`crypto-browserify`)
     }
-  },
-  optimization: {
-    // splitChunks: {
-    //   chunks: "all"
-    // },
-    moduleIds: "deterministic"
-    // runtimeChunk: {
-    //   name: "manifest"
-    // }
   }
+  // optimization: {
+  //   // splitChunks: {
+  //   //   chunks: "all"
+  //   // },
+  //   moduleIds: "deterministic"
+  //   // runtimeChunk: {
+  //   //   name: "manifest"
+  //   // }
+  // }
 };
