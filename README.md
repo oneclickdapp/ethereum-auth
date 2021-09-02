@@ -187,7 +187,7 @@ And don't forget to update your `Redwood.toml` for including the environment var
 
 ```toml
 [web]
-  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET', 'INFURA_ID']
+  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET']
 ```
 
 ### Webpack V5
@@ -349,6 +349,7 @@ yarn rwt copy:watch ../redwood
 - [x] Add support for `walletconnect`
 - [ ] Add ethereum-auth the redwood (auth playground)[https://github.com/redwoodjs/playground-auth]
 - [ ] Allow direct access to the ethers `provider` on the client.
+- [ ] Better error handling when wallet signing fails
 - [ ] Export typescript types here for the user object, instead of declaring them inside `@redwoodjs/auth`
 - [ ] Add support for `walletlink`
 
@@ -361,6 +362,9 @@ yarn publish --dry-run
 ## Resources
 
 - Looking to implement your own custom Redwood Auth? You may find this [tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) helpful (it may be out-dated by now)
+- [Redwood Tutorial](https://redwoodjs.com/tutorial/welcome-to-redwood): getting started and complete overview guide.
+- [Redwood Docs](https://redwoodjs.com/docs/introduction): using the Redwood Router, handling assets and files, list of command-line tools, and more.
+- [Redwood Redwood Community](https://community.redwoodjs.com): get help, share tips and tricks, and collaborate on everything about RedwoodJS.
 
 ## Author
 
