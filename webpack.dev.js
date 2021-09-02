@@ -4,5 +4,6 @@ const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
   mode: "development",
-  devtool: "inline-source-map"
+  devtool: "eval" // Fastest for development
+  // devtool: "eval-source-map" // NOTE: Useful for debugging
 });
