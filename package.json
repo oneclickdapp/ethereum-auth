@@ -1,9 +1,8 @@
 {
   "name": "@oneclickdapp/ethereum-auth",
-  "version": "0.2.1",
-  "description": "Ethereum auth provider for RedwoodJS",
+  "version": "0.3.0",
+  "description": "Ethereum wallet login provider for RedwoodJS projects",
   "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",
-  "main": "dist/index.js",
   "module": "src/index.js",
   "lint-staged": {
     "*.js": []
@@ -11,42 +10,38 @@
   "prepublish": "yarn build",
   "scripts": {
     "precommit": "lint-staged",
-    "watch": "webpack --watch --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
     "test": "jest",
-    "lint": "eslint ./src --fix",
-    "stats": "yarn generate-stats && bundle-stats ./stats.json",
-    "generate-stats": "webpack --profile --json > stats.json",
-    "stats-baseline": "yarn generate-stats && bundle-stats ./stats.json --baseline --json",
-    "analyze": "xdg-open ./dist/bundle-stats.html && webpack-bundle-analyzer ./stats.json"
+    "lint": "eslint ./src --fix"
   },
   "dependencies": {
     "@ethersproject/bytes": "^5.0.10",
     "@ethersproject/keccak256": "^5.0.8",
     "@ethersproject/providers": "^5.0.4",
     "@ethersproject/strings": "^5.0.9",
-    "@walletconnect/web3-provider": "^1.3.6",
+    "@walletconnect/web3-provider": "^1.5.1",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "assert": "^2.0.0",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0",
+    "util": "^0.12.4"
+  },
   "devDependencies": {
-    "@babel/core": "^7.8.3",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/runtime-corejs3": "^7.15.3",
     "babel-loader": "^8.0.6",
-    "bundle-stats": "^2.0.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
     "lint-staged": "^10.2.2",
-    "prettier": "^1.19.1",
-    "webpack": "^4.41.5",
-    "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.10",
-    "webpack-merge": "^5.7.3"
+    "prettier": "^1.19.1"
   },
   "repository": {
     "type": "git",

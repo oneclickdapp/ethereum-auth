@@ -4,42 +4,29 @@
   </a>
 </p>
 
-> Ethereum auth provider for RedwoodJS
+> Ethereum wallet login provider for RedwoodJS projects
 
-Looking to implement your own custom Redwood Auth? You may this [tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) helpful.
+## ✨ See it
 
-### ✨ [Demo](https://redwood-ethereum-login-demo.vercel.app/)
-
-Demo [source code](https://github.com/oneclickdapp/redwood-ethereum-login-demo)
+Demo [RedwoodJS App](https://redwood-ethereum-login-demo.vercel.app/) & the source code can be found in `/examples`
 
 <div align="center" >
  <img margin="0 0 10px" width="500" src="./ocd-ethereum-auth.gif"/>
 </div>
 
-## Quick Start
+## 🛠️ Set up
 
-```js
-const ethereum = new EthereumAuthClient({
-  makeRequest,
-  debug: process.NODE_ENV !== "development",
-  infuraId: process.env.INFURA_ID
-});
+If this is your first time using Redwood Auth, you should first familiarize yourself with how [Redwood authentication](https://redwoodjs.com/docs/authentication) works.
 
-const { logIn, logOut, getCurrentUser, client } = useAuth();
-
-// Trigger authentication
-await logIn("walletConnect");
-```
-
-If this is your first time using Redwood Auth, you should check out the official Redwood [auth docs](https://redwoodjs.com/docs/authentication)
-
-## Setup
-
-If you haven't created a redwood app yet, you can do so now. See my [introductory blog post](https://patrickgallagher.dev/blog/2020/11/18/web3-redwood-intro/using-redwoodjs-to-create-an-ethereum-app) for more help getting started.
+Create a new redwood app:
 
 ```bash
 yarn create redwood-app myDapp
 ```
+
+> See my [introductory blog post](https://patrickgallagher.dev/blog/2020/11/18/web3-redwood-intro/using-redwoodjs-to-create-an-ethereum-app) for more help getting started.
+
+### Scaffolding
 
 First let's do some scaffolding and install the necessary packages. This is where the 🧙‍♂️✨ magic happens!
 
@@ -53,38 +40,38 @@ Next we need to update our models. Add `address` to the **User** model, and crea
 ```js
 // api/db/schema.prisma
 model User {
-  id         String     @id @default(uuid())
-  address    String     @unique
-  authDetail AuthDetail
+  id           String     @id @default(uuid())
+  address      String     @unique
+  authDetail   AuthDetail @relation(fields: [authDetailId], references: [id])
+  authDetailId String
 }
 
 model AuthDetail {
   id        String   @id @default(uuid())
   nonce     String
   timestamp DateTime @default(now())
+  User      User?
 }
 ```
 
-Now lets use the generator for our new models. We only need the **sdl** for `AuthDetail`.
+Now lets use the generator for our user model.
 
 ```bash
 yarn rw generate scaffold user
-yarn rw generate sdl AuthDetail
 ```
 
-You can delete the service for `authDetails`, since it won't be used.
-
-Awesomesauce. Let's spin up our database!
+Awesomesauce! Let's spin up our database and apply the changes:
 
 ```bash
-yarn rw db save
-yarn rw db up
+yarn rw prisma migrate dev
 ```
 
-We're halfway there. Now let's create a new service to verify Ethereum signatures. We'll start by creating the **sdl** `ethereumAuth.js`.
+### Services
+
+Now let's make a service to perform authentication. Create a\ file `ethereumAuth.sdl.js` in `api/src/graphql/`
 
 ```js
-// api/src/graphql/ethereumAuth.js
+// api/src/graphql/ethereumAuth.sdl.js
 export const schema = gql`
   type Mutation {
     authChallenge(input: AuthChallengeInput!): AuthChallengeResult
@@ -110,7 +97,7 @@ export const schema = gql`
 `;
 ```
 
-Next create a new service named `ethereumAuth`, and paste in this code.
+Then create a file `ethereumAuth.js` in `api/src/services/ethereumAuth`
 
 ```js
 // api/src/services/ethereumAuth/ethereumAuth.js
@@ -188,15 +175,85 @@ export const authVerify = async ({
 };
 ```
 
-Last step, we need to create a secret for issuing jwt tokens.
+We're almost there! Create a server secret for issuing jwt tokens:
 
 ```bash
 openssl rand -base64 48
 ```
 
-Add the result as `ETHEREUM_JWT_SECRET` to your .env file.
+Use the resulting string for `ETHEREUM_JWT_SECRET` in your `.env` file.
 
-Done! You can use your shiny new Ethereum auth. For a full example see https://github.com/oneclickdapp/redwood-ethereum-login-demo. In the meantime, here's a quick snippet to get you started.
+And don't forget to update your `Redwood.toml` for including the environment variables in your hosted app.
+
+```toml
+[web]
+  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET']
+```
+
+### Webpack V5
+
+Webpack V5 no longer injects some node modules automatically, which are required by the `@walletconnect` dependencies. To fix this issue, you must add them manually to the webpack config in your RedwoodJS app.
+
+> Want to help out by removing this extra step? The [`@walletconnect` V5 update issue](https://github.com/WalletConnect/walletconnect-monorepo/issues/584) is waiting for a champion!
+
+If you haven't run this command already, create the config file:
+
+```bash
+yarn rw setup webpack
+```
+
+Then add the following to your config in `web/config/webpack.config.js`:
+
+```js
+const webpack = require("webpack");
+
+// See https://github.com/WalletConnect/walletconnect-monorepo/issues/584
+config.resolve.fallback = {
+  os: require.resolve(`os-browserify/browser`),
+  https: require.resolve(`https-browserify`),
+  http: require.resolve(`stream-http`),
+  stream: require.resolve(`stream-browserify`),
+  util: require.resolve(`util/`),
+  url: require.resolve(`url/`),
+  assert: require.resolve(`assert/`),
+  crypto: require.resolve(`crypto-browserify`)
+};
+config.plugins.push(
+  new webpack.ProvidePlugin({
+    process: "process/browser",
+    Buffer: ["buffer", "Buffer"]
+  })
+);
+```
+
+Now install the missing 8 packages:
+
+```bash
+cd web
+yarn add stream-browserify stream-http crypto-browserify https-browserify os-browserify util url assert
+```
+
+Test the app builds properly in development and production
+
+```bash
+yarn rw dev
+
+# It works in development? Great!
+
+yarn rw build
+```
+
+Done! You're ready to start using your shiny new Ethereum auth just like any other RedwoodJS auth provider.
+
+## Usage
+
+Start your RedwoodJS app:
+
+```bash
+yarn rw dev
+```
+
+Here's a quick snippet to help get you started. Check out the `/examples` folder for more.
 
 ```js
 // web/src/pages/LoginPage/LoginPage.js
@@ -228,7 +285,9 @@ const LoginPage = () => {
 export default LoginPage;
 ```
 
-## Wallet Connect
+## Options
+
+### Wallet Connect
 
 You must pass an optional `rpc` or `infuraId` to use Wallet Connect.
 
@@ -251,6 +310,8 @@ const onClickWalletConnect = async () => {
   await logIn("walletConnect")
 ```
 
+> Note: Don't forget to update Redwood.toml if you add new environment variables
+
 ## Additional Resources
 
 Now that you've completed setup, you might find these resources useful. More docs/examples are welcome here!
@@ -258,11 +319,16 @@ Now that you've completed setup, you might find these resources useful. More doc
 - Tutorial II Role-based access control (RBAC) https://redwoodjs.com/tutorial2/role-based-authorization-control-rbac
 - Cookbook RBAC https://redwoodjs.com/cookbook/role-based-access-control-rbac
 
-## Contributing
+## Developing
 
-### Basic
+In this repo link and watch files:
 
-If you're only editing this package, then you just link `@oneclickdapp/ethereum-auth` in your test redwood app.
+```bash
+yarn link
+yarn watch
+```
+
+Then in your app, use the local linked package
 
 ```bash
 yarn link @oneclickdapp/ethereum-auth
@@ -285,6 +351,7 @@ yarn rwt copy:watch ../redwood
 - [x] Add support for `walletconnect`
 - [ ] Add ethereum-auth the redwood (auth playground)[https://github.com/redwoodjs/playground-auth]
 - [ ] Allow direct access to the ethers `provider` on the client.
+- [ ] Better error handling when wallet signing fails
 - [ ] Export typescript types here for the user object, instead of declaring them inside `@redwoodjs/auth`
 - [ ] Add support for `walletlink`
 
@@ -293,6 +360,13 @@ yarn rwt copy:watch ../redwood
 ```bash
 yarn publish --dry-run
 ```
+
+## Resources
+
+- Looking to implement your own custom Redwood Auth? You may find this [tutorial](https://patrickgallagher.dev/blog/2020/12/27/tutorial-redwood-web3-login/tutorial-add-web3-login-to-redwoodjs) helpful (it may be out-dated by now)
+- [Redwood Tutorial](https://redwoodjs.com/tutorial/welcome-to-redwood): getting started and complete overview guide.
+- [Redwood Docs](https://redwoodjs.com/docs/introduction): using the Redwood Router, handling assets and files, list of command-line tools, and more.
+- [Redwood Redwood Community](https://community.redwoodjs.com): get help, share tips and tricks, and collaborate on everything about RedwoodJS.
 
 ## Author
 
