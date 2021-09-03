@@ -37,7 +37,12 @@ cd myDapp
 yarn rw setup auth ethereum
 ```
 
-This command should have created a new `ethereumAuth` service and sdl files, and installed some dependencies (including this package). If you're curious how the auth service works, check out `api/src/services/ethereumAuth/ethereumAuth.js`
+Until Redwood PR [#3337](https://github.com/redwoodjs/redwood/pull/3337) has been released, the CLI command above won't add two files. You'll need to add these manually to your project for now:
+
+- https://github.com/oneclickdapp/ethereum-auth/blob/master/examples/eth-auth-demo/api/src/graphql/authDetails.sdl.js
+- https://github.com/oneclickdapp/ethereum-auth/blob/master/examples/eth-auth-demo/api/src/services/ethereumAuth/ethereumAuth.js
+
+You should now have a new `ethereumAuth` service and sdl files, and a few new dependencies (including this package). If you're curious how the auth service works, check out `api/src/services/ethereumAuth/ethereumAuth.js`
 
 Next we need to update our models. Add `address` to the **User** model, and create a new `AuthDetail` model:
 
