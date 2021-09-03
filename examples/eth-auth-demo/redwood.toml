@@ -9,7 +9,7 @@
   title = "Eth Auth Demo"
   port = 8910
   apiProxyPath = "/.redwood/functions"
-  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET', 'INFURA_ID', 'DATABASE_URL']
+  includeEnvironmentVariables = ['ETHEREUM_JWT_SECRET', 'INFURA_ID', 'DATABASE']
 [api]
   port = 8911
 [browser]
