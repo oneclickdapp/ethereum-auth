@@ -2356,10 +2356,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oneclickdapp/ethereum-auth@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/@oneclickdapp/ethereum-auth/-/ethereum-auth-0.4.0.tgz#4d048210d72b913a6a05c4c553c63e05d4f9e0e0"
-  integrity sha512-IzNHTsM5m2UmndM9CoITmkBrvLN6NIHAyVUBgYd80qesTjQaEgYhG382RpkFHMhQ9sbtGQ1lyg6d+4tbTBoIVQ==
+"@oneclickdapp/ethereum-auth@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.npmjs.org/@oneclickdapp/ethereum-auth/-/ethereum-auth-0.4.1.tgz#389fb0dbf96c861906a00e27eb8131c1e1dc2c31"
+  integrity sha512-+DGNerPOEFARserr4TnnO4N/4qv+lRukcle7JJ2TX8goEYn/6b7i51BUvmmQ73561chjJ+JbynupyXk2vuYcmA==
   dependencies:
     "@ethersproject/bytes" "^5.0.10"
     "@ethersproject/keccak256" "^5.0.8"
