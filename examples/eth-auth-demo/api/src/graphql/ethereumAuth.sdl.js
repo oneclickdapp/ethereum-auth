@@ -1,23 +1,25 @@
 export const schema = gql`
-  type Mutation {
-    authChallenge(input: AuthChallengeInput!): AuthChallengeResult
-    authVerify(input: AuthVerifyInput!): AuthVerifyResult
+  type AuthChallengeResult {
+    message: String!
+  }
+
+  type AuthVerifyResult {
+    token: String!
   }
 
   input AuthChallengeInput {
     address: String!
-  }
-
-  type AuthChallengeResult {
-    message: String!
+    options: JSON
   }
 
   input AuthVerifyInput {
     signature: String!
     address: String!
+    options: JSON
   }
 
-  type AuthVerifyResult {
-    token: String!
+  type Mutation {
+    authChallenge(input: AuthChallengeInput!): AuthChallengeResult
+    authVerify(input: AuthVerifyInput!): AuthVerifyResult
   }
 `

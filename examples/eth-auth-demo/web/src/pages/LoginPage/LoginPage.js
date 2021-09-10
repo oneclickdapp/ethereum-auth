@@ -10,7 +10,7 @@ const LoginPage = () => {
 
   const onLogin = async (walletType) => {
     try {
-      await logIn(walletType)
+      await logIn({ type: walletType })
       navigate(redirectTo || routes.home())
     } catch (e) {
       console.log(e)

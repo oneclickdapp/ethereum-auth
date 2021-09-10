@@ -78,6 +78,8 @@ yarn rw prisma migrate dev
 We're almost there! Create a server secret for issuing jwt tokens:
 
 ```bash
+yarn rw g secret
+# or
 openssl rand -base64 48
 ```
 
@@ -207,7 +209,7 @@ Specify the wallet type by passing a String to `logIn()`
 const { logIn, logOut, getCurrentUser } = useAuth()
 
 const onClickWalletConnect = async () => {
-  await logIn("walletConnect")
+  await logIn({type: "walletConnect"})
 ```
 
 > Note: Don't forget to update Redwood.toml if you add new environment variables

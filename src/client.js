@@ -45,8 +45,11 @@ class EthereumAuthClient {
     this.onDisconnect = onDisconnect;
   }
 
-  async login(type = WALLET_TYPES.browser) {
+  async login(options) {
     try {
+      let type = WALLET_TYPES.browser;
+      let rest;
+      if (options) ({ type, ...rest } = options);
       const isWalletConnect = type === WALLET_TYPES.walletConnect;
       let unlock = unlockBrowser;
       if (isWalletConnect) {
@@ -83,7 +86,7 @@ class EthereumAuthClient {
             authChallenge: { message }
           }
         } = await this.makeRequest(AUTH_CHALLENGE_MUTATION, {
-          input: { address: walletAddress }
+          input: { address: walletAddress, options: rest }
         }));
       } catch (e) {
         console.log(e);
@@ -108,7 +111,7 @@ class EthereumAuthClient {
             authVerify: { token }
           }
         } = await this.makeRequest(AUTH_VERIFY_MUTATION, {
-          input: { address: walletAddress, signature }
+          input: { address: walletAddress, signature, options: rest }
         }));
       } catch (e) {
         console.log(e);
