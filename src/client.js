@@ -50,7 +50,6 @@ class EthereumAuthClient {
       let type = WALLET_TYPES.browser;
       let rest;
       if (options) ({ type, ...rest } = options);
-      console.log(type);
       const isWalletConnect = type === WALLET_TYPES.walletConnect;
       let unlock = unlockBrowser;
       if (isWalletConnect) {
