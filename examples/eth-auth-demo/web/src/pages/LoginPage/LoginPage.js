@@ -34,9 +34,11 @@ const LoginPage = () => {
             className={
               'mt-4 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-base font-medium hover:bg-gray-300'
             }
-            onClick={() => onLogin()}
+            onClick={onLogin}
           >
-            <MetamaskIcon />
+            <div className="mr-4">
+              <MetamaskIcon />
+            </div>
             Log in with Ethereum
           </button>
         </li>
@@ -47,7 +49,9 @@ const LoginPage = () => {
             }
             onClick={() => onLogin('walletConnect')}
           >
-            <MobileWalletIcon />
+            <div className="mr-4">
+              <MobileWalletIcon />
+            </div>
             Log in with Wallet Connect
           </button>
         </li>

@@ -38,6 +38,7 @@ const ApolloInjector = ({ children }) => {
 
     ethereum = new EthereumAuthClient({
       makeRequest,
+      infuraId: process.env.INFURA_ID,
       debug: process.NODE_ENV === 'development',
     })
   } catch (e) {

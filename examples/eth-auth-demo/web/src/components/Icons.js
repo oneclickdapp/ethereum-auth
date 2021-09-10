@@ -125,3 +125,105 @@ export const MetamaskIcon = () => {
     </svg>
   )
 }
+
+export const PlusIcon = ({
+  width = '12',
+  height = '12',
+  color = '#030314',
+}) => {
+  return (
+    <svg
+      aria-hidden
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      fill="none"
+      viewBox="0 0 12 12"
+    >
+      <path fill={color} d="M12 4H8V0H4v4H0v4h4v4h4V8h4V4z"></path>
+    </svg>
+  )
+}
+
+export const CircleArrowIcon = ({ color = '#030314', width, height }) => {
+  return (
+    <svg
+      aria-hidden
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      viewBox="0 0 12 12"
+    >
+      <path
+        d="M12 5.639V0l-1.771 1.752A5.937 5.937 0 006 0a6 6 0 104.8 9.6L9.2 8.4A4 4 0 116 2a3.944 3.944 0 012.794 1.171l-1.919 1.9z"
+        className="0"
+        fill={color}
+      ></path>
+    </svg>
+  )
+}
+export const LogoutIcon = ({
+  color = '#030314',
+  width = '1rem',
+  height = '1rem',
+}) => {
+  return (
+    <svg
+      aria-hidden
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      fill="none"
+      viewBox="0 0 12 12"
+    >
+      <path fill={color} d="M7 5H4v2h3v3l5-4-5-4v3z"></path>
+      <path
+        fill={color}
+        d="M2 2h4V0H2a2 2 0 00-2 2v8a2 2 0 002 2h4v-2H2V2z"
+      ></path>
+    </svg>
+  )
+}
+
+export const NetworkIcon = ({
+  color = '#030314',
+  width = '1rem',
+  height = '1rem',
+}) => {
+  return (
+    <svg
+      aria-hidden
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      fill="none"
+      viewBox="0 0 64 64"
+    >
+      <path
+        fill={color}
+        d="M62 34a2 2 0 01-2-2A28.03 28.03 0 0032 4a2 2 0 010-4 32.038 32.038 0 0132 32 2 2 0 01-2 2z"
+      ></path>
+      <path
+        fill={color}
+        d="M52 34a2 2 0 01-2-2 18.02 18.02 0 00-18-18 2 2 0 010-4 22.026 22.026 0 0122 22 2 2 0 01-2 2zM54.626 51.8L34.826 32l2.586-2.586a2 2 0 00-2.828-2.828L32 29.172 16.518 13.69A23.947 23.947 0 008 32v2H4v-2a27.92 27.92 0 019.692-21.136L12.2 9.374a2 2 0 00-2.828 0 32 32 0 1045.254 45.252 2 2 0 000-2.826z"
+      ></path>
+    </svg>
+  )
+}
+
+export const CheckmarkIcon = ({ color = '#030314', width, height }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      fill="none"
+      viewBox="0 0 14 11"
+    >
+      <path
+        fill={color}
+        d="M5.134 6.89l-2.56-2.56-1.92 1.92 4.48 4.48 8.32-8.32-1.92-1.92-6.4 6.4z"
+      ></path>
+    </svg>
+  )
+}
