@@ -58,7 +58,7 @@ const DefaultLayout = ({ children }) => {
           </div>
         </div>
       </header>
-      <div className="mt-4 flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="rw-main mt-4 flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6">
         {children}
       </div>
 
