@@ -1,5 +1,6 @@
 <h1 align="center">Welcome to @oneclickdapp/ethereum-auth 👋</h1>
 <p>
+    <a href="https://twitter.com/pi0neerpat" target="_blank" >
     <img alt="Twitter: pi0neerpat" src="https://img.shields.io/twitter/follow/pi0neerpat.svg?style=social" />
   </a>
 </p>
