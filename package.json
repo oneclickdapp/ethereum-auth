@@ -14,13 +14,13 @@
     "lint": "eslint ./src --fix"
   },
   "dependencies": {
-    "@ethersproject/bytes": "^5.0.10",
-    "@ethersproject/keccak256": "^5.0.8",
-    "@ethersproject/providers": "^5.0.4",
-    "@ethersproject/strings": "^5.0.9",
-    "@walletconnect/web3-provider": "^1.5.1",
-    "graphql": "^15.3.0",
-    "graphql-tag": "^2.11.0"
+    "@ethersproject/bytes": "^5.5.0",
+    "@ethersproject/keccak256": "^5.5.0",
+    "@ethersproject/providers": "^5.5.0",
+    "@ethersproject/strings": "^5.5.0",
+    "@walletconnect/web3-provider": "^1.6.6",
+    "graphql": "^15.6.1",
+    "graphql-tag": "^2.12.5"
   },
   "peerDependencies": {
     "assert": "^2.0.0",
