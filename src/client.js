@@ -119,10 +119,12 @@ class EthereumAuthClient {
       }
       localStorage.setItem(LOCAL_TOKEN_KEY, token);
     } catch (e) {
-      console.log(
-        getErrorResponse(`${e}. See above error for more details.`, "login")
-          .error.message
-      );
+      const message = getErrorResponse(
+        `${e}. See above error for more details.`,
+        "login"
+      ).error.message;
+      console.log(message);
+      throw message;
     }
   }
 
