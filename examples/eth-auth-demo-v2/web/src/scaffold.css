@@ -328,3 +328,15 @@
   text-align: center;
   flex-basis: 100%;
 }
+
+.rw-input-error:focus {
+  outline: none;
+  border-color: #c53030;
+  box-shadow: 0 0 5px #c53030;
+}
+
+.rw-input-error:focus {
+  outline: none;
+  border-color: #c53030;
+  box-shadow: 0 0 5px #c53030;
+}
