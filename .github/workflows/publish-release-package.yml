@@ -1,0 +1,38 @@
+name: Publish Release Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-release:
+    name: Publish release package
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+          registry-url: https://registry.npmjs.org/
+
+      - name: Parse Tag
+        run: |
+          if echo -n "${{ github.ref }}" | grep -qE "refs/tags/ethereum-auth@";then
+            echo "PUBLISH=1" >> $GITHUB_ENV
+          fi
+
+      # - name: Build package
+      #   run: |
+      #     yarn install --frozen-lockfile
+      #     yarn build
+
+      - name: Publish package
+        if: env.PUBLISH == 1
+        run: tasks/npm-publish.sh . latest
+        env:
+          PAT: ${{ secrets.PAT }}
+          NPMJS_TOKEN: ${{ secrets.NPMJS_TOKEN }}

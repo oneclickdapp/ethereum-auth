@@ -1,0 +1,20 @@
+name: Lint
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Cache "node_modules"
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: node_modules_${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install
+      - name: yarn lint
+        run: yarn lint

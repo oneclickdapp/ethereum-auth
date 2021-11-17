@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "dependency change": ["package.json"]
+  }
+}
