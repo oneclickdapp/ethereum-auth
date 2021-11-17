@@ -1,0 +1,24 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE")
+  shadowDatabaseUrl = env("SHADOW_DATABASE")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = "native"
+}
+
+model User {
+  id           String     @id @default(uuid())
+  address      String     @unique
+  authDetail   AuthDetail @relation(fields: [authDetailId], references: [id])
+  authDetailId String
+}
+
+model AuthDetail {
+  id        String   @id @default(uuid())
+  nonce     String
+  timestamp DateTime @default(now())
+  User      User?
+}
