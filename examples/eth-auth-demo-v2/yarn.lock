@@ -3533,7 +3533,7 @@
     pascalcase "1.0.0"
     react-hook-form "7.17.5"
 
-"@redwoodjs/graphql-server@0.38.2":
+"@redwoodjs/graphql-server@0.38.2", "@redwoodjs/graphql-server@^0.38.2":
   version "0.38.2"
   resolved "https://registry.npmjs.org/@redwoodjs/graphql-server/-/graphql-server-0.38.2.tgz#168723c847238363035e3fb7e2b814741022e69a"
   integrity sha512-fUW6tvOFpd9X4qJk8TmEEXzaFa9a/pmH7YeTch22EtXzjds1+/mUuh+hoEtPt9yVaKW2dV/90jDq5gNLXvWoWQ==

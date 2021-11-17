@@ -1,7 +1,6 @@
 import { AuthProvider } from '@redwoodjs/auth'
-import EthereumAuthClient from '@oneclickdapp/ethereum-auth'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { FetchConfigProvider, useFetchConfig } from '@redwoodjs/web'
+
+
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 
@@ -52,7 +51,7 @@ const App = () => (
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
       <FetchConfigProvider>
         <ApolloInjector>
-          <AuthProvider client={ethereum} type="ethereum">
+          <AuthProvider type="dbAuth">
             <RedwoodApolloProvider>
               <Routes />
             </RedwoodApolloProvider>
