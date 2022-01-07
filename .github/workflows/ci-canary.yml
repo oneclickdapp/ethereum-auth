@@ -1,0 +1,45 @@
+name: CI Canary
+
+on:
+  push:
+    branches: ['dev']
+    paths:
+      - 'src/*'
+      - 'package.json'
+      # - '**.md' commented-out because README updates should go to the packages
+      - '.github/workflows/ci-canary.yml'
+
+jobs:
+  publish:
+    name: NPM publish dev branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+          registry-url: https://registry.npmjs.org/
+      - name: Cache "node_modules"
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: node_modules_${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Test
+        run: yarn test
+        # No build step necessary, but this is where it would go
+      - name: Setup canary package versions locally
+        run: |
+          shortRev=$(git rev-parse --short ${{ github.sha }})
+          preId=dev.${shortRev}
+          yarn lerna version prerelease --yes --no-git-tag-version --preid ${preId}
+      - name: Publish
+        run: |
+          tasks/npmrc-use-npmjs.sh > .npmrc
+          tasks/npm-publish.sh . dev
+        env:
+          PAT: ${{ secrets.PAT }}
+          NPMJS_TOKEN: ${{ secrets.NPMJS_TOKEN }}
