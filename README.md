@@ -35,7 +35,7 @@ First let's do some scaffolding and install the necessary packages. This is wher
 
 ```bash
 cd myDapp
-yarn rw setup auth ethereum
+yarn rw setup auth ethereum --force
 ```
 
 Until Redwood PR [#3337](https://github.com/redwoodjs/redwood/pull/3337) has been released, the CLI command above won't add two files. You'll need to add these manually to your project for now:
@@ -53,7 +53,7 @@ model User {
   id           String     @id @default(uuid())
   address      String     @unique
   authDetail   AuthDetail @relation(fields: [authDetailId], references: [id])
-  authDetailId String
+  authDetailId String     unique
 }
 
 model AuthDetail {
