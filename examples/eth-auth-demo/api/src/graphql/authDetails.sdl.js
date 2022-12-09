@@ -7,7 +7,7 @@ export const schema = gql`
   }
 
   type Query {
-    authDetails: [AuthDetail!]!
+    authDetails: [AuthDetail!]! @skipAuth
   }
 
   input CreateAuthDetailInput {
